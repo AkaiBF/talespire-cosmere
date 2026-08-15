@@ -1,0 +1,454 @@
+:root
+  --page-width: 900px
+  --page-height: calc(var(--page-width) * 1.414)
+  --border: #555
+  --text: #2b2b2b
+  --bg: #efefef
+  --sheet-bg-1: #f0f0f0
+  --sheet-bg-mid: #e3e3e3
+  --sheet-bg-2: #d6d6d6
+  --panel-bg: rgba(255,255,255,0.28)
+
+*
+  box-sizing: border-box
+
+body
+  margin: 0
+  padding: 24px
+  font-family: Arial, Helvetica, sans-serif
+  color: var(--text)
+  background: #d8d8d8
+  display: flex
+  flex-direction: column
+  align-items: center
+  gap: 28px
+
+.sheet
+  width: var(--page-width)
+  min-height: var(--page-height)
+  background: linear-gradient(180deg, var(--sheet-bg-1) 0%, var(--sheet-bg-2) 100%)
+  box-shadow: 0 8px 28px rgba(0,0,0,0.15)
+  padding: 18px 16px 16px
+  position: relative
+
+.page-1
+  background: linear-gradient(180deg, var(--sheet-bg-1) 0%, var(--sheet-bg-mid) 100%)
+
+.page-2
+  background: linear-gradient(180deg, var(--sheet-bg-mid) 0%, var(--sheet-bg-2) 100%)
+
+.framed
+  border: 2px solid var(--border)
+  background: var(--panel-bg)
+  position: relative
+
+  &::before,
+  &::after
+    content: ""
+    position: absolute
+    width: 10px
+    height: 10px
+    border-color: var(--border)
+    border-style: solid
+
+  &::before
+    top: -4px
+    left: -4px
+    border-width: 2px 0 0 2px
+
+  &::after
+    right: -4px
+    bottom: -4px
+    border-width: 0 2px 2px 0
+
+h3, h4
+  margin: 0
+  font-weight: 700
+  letter-spacing: .04em
+
+input, textarea
+  width: 100%
+  border: none
+  background: transparent
+  outline: none
+  font-family: inherit
+  font-size: 12px
+  text-align: center
+
+textarea
+  resize: none
+
+input::placeholder
+  color: #888
+  opacity: 0.6
+
+input[type="number"]
+  appearance: textfield
+  -moz-appearance: textfield
+  text-align: center
+  padding: 0
+  margin: 0
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button
+  -webkit-appearance: none
+  margin: 0
+
+.top-grid
+  display: grid
+  grid-template-columns: 1.15fr 1.85fr
+  gap: 14px
+  align-items: start
+
+.title-box
+  height: 74px
+  display: flex
+  align-items: center
+  gap: 12px
+  padding: 10px 14px
+
+.logo-mark
+  width: 46px
+  height: 46px
+  border: 2px solid var(--text)
+  border-radius: 50%
+  display: grid
+  place-items: center
+  font-size: 24px
+  font-weight: 700
+
+.logo-text
+  .big
+    font-size: 26px
+    font-weight: 800
+    letter-spacing: .06em
+    line-height: 1
+
+  .small
+    font-size: 13px
+    letter-spacing: .22em
+    font-weight: 700
+
+.player-name
+  height: 50px
+  margin-top: 10px
+  display: flex
+  align-items: center
+  justify-content: center
+  padding: 12px 8px 6px
+  font-size: 12px
+  font-weight: 700
+  position: relative
+
+  > label
+    position: absolute
+    top: -9px
+    left: 10px
+    background: #e6e6e6
+    padding: 0 5px
+    font-size: 10px
+    letter-spacing: .03em
+    text-transform: uppercase
+
+.identity
+  min-height: 126px
+  display: flex
+  flex-direction: column
+
+  .field
+    border-right: 2px solid var(--border)
+    border-bottom: 2px solid var(--border)
+    padding: 14px 10px 8px
+    font-size: 12px
+    font-weight: 700
+    position: relative
+
+    > label
+      position: absolute
+      top: -9px
+      left: 10px
+      background: #e6e6e6
+      padding: 0 5px
+      font-size: 10px
+      letter-spacing: .03em
+      text-transform: uppercase
+
+    input
+      text-align: left
+
+  .id-row:last-child .field
+    border-bottom: 0
+
+  .field:last-child
+    border-right: 0
+
+.id-row
+  display: grid
+  grid-template-columns: 1fr 112px
+  min-height: 42px
+
+.centered-field
+  > label,
+  > h4
+    left: 50% !important
+    transform: translateX(-50%)
+
+.attributes-row
+  display: grid
+  grid-template-columns: repeat(3, 1fr)
+  gap: 24px
+  margin-top: 10px
+
+.attr-group
+  h3
+    text-align: center
+    margin-bottom: 2px
+    font-size: 20px
+
+.stat
+  height: 63px
+  display: flex
+  align-items: center
+  justify-content: center
+
+  width: 100%
+
+  input
+    font-weight: 700
+    font-size: 14px
+
+.stat-field
+  display: flex
+  flex-direction: column
+  align-items: center
+  gap: 4px
+
+  label
+    font-size: 11px
+    font-weight: 700
+    letter-spacing: .02em
+    text-transform: uppercase
+
+  .stat
+    height: 46px
+
+.resource-field
+  display: flex
+  flex-direction: column
+  align-items: center
+  gap: 4px
+  justify-content: center
+  width: 100%
+
+  label
+    font-size: 10px
+    font-weight: 700
+    letter-spacing: .02em
+    line-height: 1.15
+    text-transform: uppercase
+    text-align: center
+
+    small
+      font-size: 9px
+      font-weight: 700
+
+  .resource
+    width: 100%
+    min-height: 40px
+    display: flex
+    align-items: center
+    justify-content: center
+
+.resource-row
+  margin-top: 8px
+  padding-top: 8px
+  border-top: 2px solid var(--border)
+  display: grid
+  gap: 10px
+  align-items: center
+  justify-items: center
+
+  &.two
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+
+  &.physical-bottom
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+
+    .deflect-wrap
+      grid-column: 1 / -1
+      margin-top: 4px
+      padding-top: 8px
+      border-top: 2px solid var(--border)
+      display: flex
+      flex-direction: column
+      align-items: center
+      justify-content: center
+      gap: 6px
+
+.defense-over-grid
+  grid-template-columns: repeat(2, minmax(0, 1fr))
+
+.defense-over
+  align-items: center
+
+  .shield
+    margin-bottom: 4px
+    align-self: center
+
+.shield
+  width: 62px
+  height: 74px
+  position: relative
+  background: #000
+  clip-path: polygon(50% 100%, 10% 74%, 10% 14%, 50% 2%, 90% 14%, 90% 74%)
+  display: grid
+  place-items: center
+
+  &::before
+    content: ""
+    position: absolute
+    inset: 2px
+    background: #fff
+    clip-path: polygon(50% 100%, 10% 74%, 10% 14%, 50% 2%, 90% 14%, 90% 74%)
+
+  input
+    position: relative
+    z-index: 1
+    width: 56%
+    text-align: center
+    font-size: 16px
+    font-weight: 700
+    line-height: 1
+
+.skills-grid
+  display: grid
+  grid-template-columns: repeat(3, 1fr)
+  gap: 28px
+  margin-top: 14px
+
+.skill
+  display: flex
+  align-items: center
+  justify-content: flex-start
+  gap: 8px
+  margin-bottom: 6px
+  min-height: 33px
+
+  .box
+    width: 34px
+    height: 28px
+    border: 2px solid #707070
+    border-radius: 4px
+    background: rgba(255,255,255,0.4)
+
+.clickable-skill
+  cursor: pointer
+
+.large-panel
+  padding: 14px 8px 6px
+  position: relative
+
+  > h4
+    position: absolute
+    top: -9px
+    left: 10px
+    background: #e6e6e6
+    padding: 0 5px
+    font-size: 10px
+    letter-spacing: .03em
+    text-transform: uppercase
+
+  textarea
+    height: 100%
+
+.spheres-box,
+.panel,
+.goals-panel,
+.appearance-panel,
+.note-panel,
+.equipment-panel
+  position: relative
+  padding-top: 14px
+
+  > label,
+  > h4
+    position: absolute
+    top: -9px
+    left: 10px
+    background: #e6e6e6
+    padding: 0 5px
+    font-size: 10px
+    letter-spacing: .03em
+    text-transform: uppercase
+
+.writing-lines
+  height: 90px
+  margin: 8px 0 12px
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent 23px, #666 24px, transparent 25px)
+
+.importer
+  width: var(--page-width)
+  margin-bottom: 12px
+  padding: 14px 12px 12px
+
+  > h4
+    margin-bottom: 8px
+    font-size: 13px
+    letter-spacing: .06em
+    text-transform: uppercase
+
+  textarea
+    min-height: 170px
+    border: 1px solid #8e8e8e
+    background: rgba(255,255,255,0.55)
+    padding: 8px
+    font-family: "Consolas", "Courier New", monospace
+    text-align: left
+
+.importer-actions
+  display: flex
+  gap: 8px
+  margin-top: 8px
+
+  button
+    border: 1px solid #555
+    background: #e8e8e8
+    padding: 6px 10px
+    font-size: 12px
+    cursor: pointer
+
+    &:hover
+      background: #dcdcdc
+
+.importer-toggle-wrap
+  width: var(--page-width)
+  margin-bottom: 10px
+
+.importer-toggle
+  width: 100%
+  border: 1px solid #555
+  background: #e8e8e8
+  padding: 8px 10px
+  font-size: 12px
+  letter-spacing: .03em
+  text-transform: uppercase
+  cursor: pointer
+
+  &:hover
+    background: #dcdcdc
+
+.importer-status
+  min-height: 18px
+  margin: 8px 0 0
+  font-size: 12px
+  text-align: left
+
+@media print
+  body
+    background: white
+    padding: 0
+    gap: 0
+
+  .sheet
+    box-shadow: none
+    break-after: page

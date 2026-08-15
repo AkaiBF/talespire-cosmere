@@ -1,208 +1,326 @@
+<section class="importer-toggle-wrap">
+  <button class="importer-toggle" type="button" (click)="toggleJsonImporter()">
+    {{ showJsonImporter ? 'Ocultar importador JSON' : 'Mostrar importador JSON' }}
+  </button>
+</section>
 
-  <div class="sheet page-1">
-    <section class="top-grid">
-      <div class="logo-box framed title-box">
-        <div class="logo-mark">✦</div>
+<section *ngIf="showJsonImporter" class="importer framed">
+  <h4>Importador JSON (CharacterSheet)</h4>
+  <textarea name="jsonImportText" [(ngModel)]="jsonImportText" [ngModelOptions]="{ standalone: true }"
+    placeholder='Pega aqui un objeto JSON valido para CharacterSheet'></textarea>
+  <div class="importer-actions">
+    <button type="button" (click)="importCharacterSheetFromJson()">Importar JSON</button>
+    <button type="button" (click)="loadCurrentSheetJson()">Generar JSON actual</button>
+  </div>
+  <p class="importer-status">{{ importStatusText }}</p>
+</section>
+
+<form class="sheet page-1">
+  <section class="top-grid">
+    <div>
+      <div class="title-box framed">
+        <div class="logo-mark">S</div>
         <div class="logo-text">
           <div class="big">STORMLIGHT</div>
           <div class="small">ROLEPLAYING GAME</div>
         </div>
       </div>
 
-      <div class="framed field player-name"><span>PLAYER NAME</span></div>
+      <div class="player-name framed line-field centered-field mt-10">
+        <label>Player Name</label>
+        <input type="text" name="playerName" [(ngModel)]="characterSheet['playerName']" />
+      </div>
+    </div>
 
-      <div class="framed identity">
-        <div class="id-row">
-          <div class="field wide"><span>CHARACTER NAME</span></div>
-          <div class="field level"><span>LEVEL</span></div>
+    <div class="identity framed">
+      <div class="id-row">
+        <div class="field wide line-field">
+          <label>Character Name</label>
+          <input type="text" name="characterName" [(ngModel)]="characterSheet['characterName']" />
         </div>
-        <div class="id-row second">
-          <div class="field wide"><span>PATHS</span></div>
-          <div class="field ancestry"><span>ANCESTRY</span></div>
+        <div class="field level line-field centered-field">
+          <label>Level</label>
+          <input type="text" name="level" [(ngModel)]="characterSheet['level']" />
         </div>
       </div>
-    </section>
+      <div class="id-row second">
+        <div class="field ancestry line-field">
+          <label>Paths / Ancestry</label>
+          <textarea name="pathsAncestry" [(ngModel)]="characterSheet['pathsAncestry']"></textarea>
+        </div>
+        <div class="field spheres line-field centered-field">
+          <label>Spheres</label>
+          <textarea name="spheres" [(ngModel)]="characterSheet['spheres']"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <section class="attributes-row">
-      <div class="attr-group">
-        <h3>PHYSICAL</h3>
-        <div class="attr-grid three">
-          <div class="framed stat"><span>STRENGTH</span></div>
-          <div class="defense-stack">
-            <div class="defense-label">PHYSICAL<br>DEFENSE</div>
-            <div class="shield"></div>
+  <section class="attributes-row">
+    <div class="attr-group">
+      <h3>Physical</h3>
+      <div class="attr-grid defense-over-grid">
+        <div class="stat-field defense-over">
+          <div class="shield"><input type="number" name="physicalDefense" aria-label="Physical Defense"
+              [(ngModel)]="characterSheet['physicalDefense']" /></div>
+          <label>Strength</label>
+          <div class="stat framed number-field">
+            <input type="number" name="strength" [(ngModel)]="characterSheet['strength']" />
           </div>
-          <div class="framed stat"><span>SPEED</span></div>
         </div>
-        <div class="resource-row physical-bottom">
-          <div class="framed resource"><span>HEALTH <small>MAXIMUM</small></span></div>
-          <div class="framed resource"><span>CURRENT</span></div>
-          <div class="deflect-wrap">
-            <div class="small-shield"></div>
-            <div class="deflect-label">DEFLECT</div>
+        <div class="stat-field">
+          <label>Speed</label>
+          <div class="stat framed number-field">
+            <input type="number" name="speed" [(ngModel)]="characterSheet['speed']" />
           </div>
         </div>
       </div>
-
-      <div class="attr-group">
-        <h3>COGNITIVE</h3>
-        <div class="attr-grid three">
-          <div class="framed stat"><span>INTELLECT</span></div>
-          <div class="defense-stack">
-            <div class="defense-label">COGNITIVE<br>DEFENSE</div>
-            <div class="shield"></div>
+      <div class="resource-row physical-bottom">
+        <div class="resource-field">
+          <label>Health<br /><small>Maximum</small></label>
+          <div class="resource framed number-field">
+            <input type="number" name="healthMax" [(ngModel)]="characterSheet['healthMax']" />
           </div>
-          <div class="framed stat"><span>WILLPOWER</span></div>
         </div>
-        <div class="resource-row two">
-          <div class="framed resource"><span>FOCUS <small>MAXIMUM</small></span></div>
-          <div class="framed resource"><span>CURRENT</span></div>
-        </div>
-      </div>
-
-      <div class="attr-group">
-        <h3>SPIRITUAL</h3>
-        <div class="attr-grid three">
-          <div class="framed stat"><span>AWARENESS</span></div>
-          <div class="defense-stack">
-            <div class="defense-label">SPIRITUAL<br>DEFENSE</div>
-            <div class="shield"></div>
+        <div class="resource-field">
+          <label>Health<br /><small>Current</small></label>
+          <div class="resource framed number-field">
+            <input type="number" name="healthCurrent" [(ngModel)]="characterSheet['healthCurrent']" />
           </div>
-          <div class="framed stat"><span>PRESENCE</span></div>
         </div>
-        <div class="resource-row two">
-          <div class="framed resource"><span>INVESTITURE <small>MAXIMUM</small></span></div>
-          <div class="framed resource"><span>CURRENT</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="skills-grid">
-      <div class="skills-column">
-        <div class="skill"><span class="box"></span><label>AGILITY (SPD)</label></div>
-        <div class="skill"><span class="box"></span><label>ATHLETICS (STR)</label></div>
-        <div class="skill"><span class="box"></span><label>HEAVY WEAPONS (STR)</label></div>
-        <div class="skill"><span class="box"></span><label>LIGHT WEAPONS (SPD)</label></div>
-        <div class="skill"><span class="box"></span><label>STEALTH (SPD)</label></div>
-        <div class="skill"><span class="box"></span><label>THIEVERY (SPD)</label></div>
-        <div class="skill"><span class="box"></span><label>__________ ( ___ )</label></div>
-      </div>
-      <div class="skills-column">
-        <div class="skill"><span class="box"></span><label>CRAFTING (INT)</label></div>
-        <div class="skill"><span class="box"></span><label>DEDUCTION (INT)</label></div>
-        <div class="skill"><span class="box"></span><label>DISCIPLINE (WIL)</label></div>
-        <div class="skill"><span class="box"></span><label>INTIMIDATION (WIL)</label></div>
-        <div class="skill"><span class="box"></span><label>LORE (INT)</label></div>
-        <div class="skill"><span class="box"></span><label>MEDICINE (INT)</label></div>
-        <div class="skill"><span class="box"></span><label>__________ ( ___ )</label></div>
-      </div>
-      <div class="skills-column">
-        <div class="skill"><span class="box"></span><label>DECEPTION (PRE)</label></div>
-        <div class="skill"><span class="box"></span><label>INSIGHT (AWA)</label></div>
-        <div class="skill"><span class="box"></span><label>LEADERSHIP (PRE)</label></div>
-        <div class="skill"><span class="box"></span><label>PERCEPTION (AWA)</label></div>
-        <div class="skill"><span class="box"></span><label>PERSUASION (PRE)</label></div>
-        <div class="skill"><span class="box"></span><label>SURVIVAL (AWA)</label></div>
-        <div class="skill"><span class="box"></span><label>__________ ( ___ )</label></div>
-      </div>
-    </section>
-
-    <section class="info-row small-panels">
-      <div class="framed panel"><h4>LIFTING CAPACITY</h4></div>
-      <div class="framed panel"><h4>MOVEMENT</h4></div>
-      <div class="framed panel wide"><h4>RECOVERY DIE</h4></div>
-      <div class="framed panel wide"><h4>SENSES RANGE</h4></div>
-    </section>
-
-    <section class="middle-row">
-      <div class="left-stack">
-        <div class="framed large-panel short"><h4>CONDITIONS &amp; INJURIES</h4></div>
-        <div class="framed large-panel tall"><h4>WEAPONS</h4></div>
-      </div>
-      <div class="right-stack">
-        <div class="framed large-panel short"><h4>EXPERTISES</h4></div>
-        <div class="framed large-panel tall"><h4>TALENTS</h4></div>
-      </div>
-    </section>
-  </div>
-
-  <div class="sheet page-2">
-    <section class="top-grid second-page-top">
-      <div class="framed field player-name"><span>PLAYER NAME</span></div>
-
-      <div class="framed identity">
-        <div class="id-row">
-          <div class="field wide"><span>CHARACTER NAME</span></div>
-          <div class="field level"><span>LEVEL</span></div>
-        </div>
-        <div class="id-row second">
-          <div class="field wide"><span>PATHS</span></div>
-          <div class="field ancestry"><span>ANCESTRY</span></div>
+        <div class="deflect-wrap">
+          <div class="small-shield"><input type="number" name="deflect" [(ngModel)]="characterSheet['deflect']" /></div>
+          <div class="deflect-label">Deflect</div>
         </div>
       </div>
+    </div>
 
-      <div class="framed spheres-box"><span>SPHERES</span></div>
-    </section>
-
-    <section class="attributes-row compact">
-      <div class="attr-group">
-        <h3>PHYSICAL</h3>
-        <div class="attr-grid three compact-grid">
-          <div class="framed stat"><span>STRENGTH</span></div>
-          <div class="defense-stack">
-            <div class="defense-label">PHYSICAL<br>DEFENSE</div>
-            <div class="shield"></div>
+    <div class="attr-group">
+      <h3>Cognitive</h3>
+      <div class="attr-grid defense-over-grid compact-grid">
+        <div class="stat-field defense-over">
+          <div class="shield"><input type="number" name="cognitiveDefense" aria-label="Cognitive Defense"
+              [(ngModel)]="characterSheet['cognitiveDefense']" /></div>
+          <label>Intellect</label>
+          <div class="stat framed number-field">
+            <input type="number" name="intellect" [(ngModel)]="characterSheet['intellect']" />
           </div>
-          <div class="framed stat"><span>SPEED</span></div>
         </div>
-      </div>
-
-      <div class="attr-group">
-        <h3>COGNITIVE</h3>
-        <div class="attr-grid three compact-grid">
-          <div class="framed stat"><span>INTELLECT</span></div>
-          <div class="defense-stack">
-            <div class="defense-label">COGNITIVE<br>DEFENSE</div>
-            <div class="shield"></div>
+        <div class="stat-field">
+          <label>Willpower</label>
+          <div class="stat framed number-field">
+            <input type="number" name="willpower" [(ngModel)]="characterSheet['willpower']" />
           </div>
-          <div class="framed stat"><span>WILLPOWER</span></div>
         </div>
       </div>
-
-      <div class="attr-group">
-        <h3>SPIRITUAL</h3>
-        <div class="attr-grid three compact-grid">
-          <div class="framed stat"><span>AWARENESS</span></div>
-          <div class="defense-stack">
-            <div class="defense-label">SPIRITUAL<br>DEFENSE</div>
-            <div class="shield"></div>
+      <div class="resource-row two">
+        <div class="resource-field">
+          <label>Focus<br /><small>Maximum</small></label>
+          <div class="resource framed number-field">
+            <input type="number" name="focusMax" [(ngModel)]="characterSheet['focusMax']" />
           </div>
-          <div class="framed stat"><span>PRESENCE</span></div>
+        </div>
+        <div class="resource-field">
+          <label>Focus<br /><small>Current</small></label>
+          <div class="resource framed number-field">
+            <input type="number" name="focusCurrent" [(ngModel)]="characterSheet['focusCurrent']" />
+          </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="page-2-main">
-      <div class="left-col">
-        <div class="framed goals-panel">
-          <h4>PURPOSE</h4>
-          <div class="writing-lines"></div>
-          <h4>OBSTACLE</h4>
-          <div class="writing-lines small"></div>
-          <h4>GOALS</h4>
-          <div class="writing-lines tall"></div>
+    <div class="attr-group">
+      <h3>Spiritual</h3>
+      <div class="attr-grid defense-over-grid compact-grid">
+        <div class="stat-field defense-over">
+          <div class="shield"><input type="number" name="spiritualDefense" aria-label="Spiritual Defense"
+              [(ngModel)]="characterSheet['spiritualDefense']" /></div>
+          <label>Awareness</label>
+          <div class="stat framed number-field">
+            <input type="number" name="awareness" [(ngModel)]="characterSheet['awareness']" />
+          </div>
         </div>
+        <div class="stat-field">
+          <label>Presence</label>
+          <div class="stat framed number-field">
+            <input type="number" name="presence" [(ngModel)]="characterSheet['presence']" />
+          </div>
+        </div>
+      </div>
+      <div class="resource-row two">
+        <div class="resource-field">
+          <label>Investiture<br /><small>Maximum</small></label>
+          <div class="resource framed number-field">
+            <input type="number" name="investitureMax" [(ngModel)]="characterSheet['investitureMax']" />
+          </div>
+        </div>
+        <div class="resource-field">
+          <label>Investiture<br /><small>Current</small></label>
+          <div class="resource framed number-field">
+            <input type="number" name="investitureCurrent" [(ngModel)]="characterSheet['investitureCurrent']" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="skills-grid">
+    <div>
+      <div class="skill"><input class="box" type="number" name="agility"
+          [(ngModel)]="characterSheet['agility']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('agility', 'AGILITY (SPD)')">Agility (spd)</label></div>
+      <div class="skill"><input class="box" type="number" name="athletics"
+          [(ngModel)]="characterSheet['athletics']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('athletics', 'ATHLETICS (STR)')">Athletics (str)</label></div>
+      <div class="skill"><input class="box" type="number" name="heavyWeapons"
+          [(ngModel)]="characterSheet['heavyWeapons']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('heavyWeapons', 'HEAVY WEAPONS (STR)')">Heavy Weapons (str)</label></div>
+      <div class="skill"><input class="box" type="number" name="lightWeapons"
+          [(ngModel)]="characterSheet['lightWeapons']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('lightWeapons', 'LIGHT WEAPONS (SPD)')">Light Weapons (spd)</label></div>
+      <div class="skill"><input class="box" type="number" name="stealth"
+          [(ngModel)]="characterSheet['stealth']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('stealth', 'STEALTH (SPD)')">Stealth (spd)</label></div>
+      <div class="skill"><input class="box" type="number" name="thievery"
+          [(ngModel)]="characterSheet['thievery']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('thievery', 'THIEVERY (SPD)')">Thievery (spd)</label></div>
+      <div class="skill"><input class="box" type="number" name="physicalOther"
+          [(ngModel)]="characterSheet['physicalOther']" /><label><input class="inline-text" type="text"
+            placeholder="Other skill" [(ngModel)]="otherSkillNames[0]"
+            [ngModelOptions]="{ standalone: true }" /></label></div>
+    </div>
+    <div>
+      <div class="skill"><input class="box" type="number" name="crafting"
+          [(ngModel)]="characterSheet['crafting']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('crafting', 'CRAFTING (INT)')">Crafting (int)</label></div>
+      <div class="skill"><input class="box" type="number" name="deduction"
+          [(ngModel)]="characterSheet['deduction']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('deduction', 'DEDUCTION (INT)')">Deduction (int)</label></div>
+      <div class="skill"><input class="box" type="number" name="discipline"
+          [(ngModel)]="characterSheet['discipline']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('discipline', 'DISCIPLINE (WIL)')">Discipline (wil)</label></div>
+      <div class="skill"><input class="box" type="number" name="intimidation"
+          [(ngModel)]="characterSheet['intimidation']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('intimidation', 'INTIMIDATION (WIL)')">Intimidation (wil)</label></div>
+      <div class="skill"><input class="box" type="number" name="lore" [(ngModel)]="characterSheet['lore']" /><label
+          class="clickable-skill" (click)="onSkillLabelClick('lore', 'LORE (INT)')">Lore
+          (int)</label></div>
+      <div class="skill"><input class="box" type="number" name="medicine"
+          [(ngModel)]="characterSheet['medicine']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('medicine', 'MEDICINE (INT)')">Medicine (int)</label></div>
+      <div class="skill"><input class="box" type="number" name="cognitiveOther"
+          [(ngModel)]="characterSheet['cognitiveOther']" /><label><input class="inline-text" type="text"
+            placeholder="Other skill" [(ngModel)]="otherSkillNames[1]"
+            [ngModelOptions]="{ standalone: true }" /></label></div>
+    </div>
+    <div>
+      <div class="skill"><input class="box" type="number" name="deception"
+          [(ngModel)]="characterSheet['deception']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('deception', 'DECEPTION (PRE)')">Deception (pre)</label></div>
+      <div class="skill"><input class="box" type="number" name="insight"
+          [(ngModel)]="characterSheet['insight']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('insight', 'INSIGHT (AWA)')">Insight (awa)</label></div>
+      <div class="skill"><input class="box" type="number" name="leadership"
+          [(ngModel)]="characterSheet['leadership']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('leadership', 'LEADERSHIP (PRE)')">Leadership (pre)</label></div>
+      <div class="skill"><input class="box" type="number" name="perception"
+          [(ngModel)]="characterSheet['perception']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('perception', 'PERCEPTION (AWA)')">Perception (awa)</label></div>
+      <div class="skill"><input class="box" type="number" name="persuasion"
+          [(ngModel)]="characterSheet['persuasion']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('persuasion', 'PERSUASION (PRE)')">Persuasion (pre)</label></div>
+      <div class="skill"><input class="box" type="number" name="survival"
+          [(ngModel)]="characterSheet['survival']" /><label class="clickable-skill"
+          (click)="onSkillLabelClick('survival', 'SURVIVAL (AWA)')">Survival (awa)</label></div>
+      <div class="skill"><input class="box" type="number" name="spiritualOther"
+          [(ngModel)]="characterSheet['spiritualOther']" /><label><input class="inline-text" type="text"
+            placeholder="Other skill" [(ngModel)]="otherSkillNames[2]"
+            [ngModelOptions]="{ standalone: true }" /></label></div>
+    </div>
+  </section>
+
+  <section class="info-row small-panels">
+    <div class="panel framed line-field centered-field">
+      <h4>Lifting Capacity</h4>
+      <input type="text" name="liftingCapacity" [(ngModel)]="characterSheet['liftingCapacity']" />
+    </div>
+    <div class="panel framed line-field centered-field">
+      <h4>Movement</h4>
+      <input type="text" name="movement" [(ngModel)]="characterSheet['movement']" />
+    </div>
+    <div class="panel framed line-field centered-field">
+      <h4>Recovery Die</h4>
+      <input type="text" name="recoveryDie" [(ngModel)]="characterSheet['recoveryDie']" />
+    </div>
+    <div class="panel framed line-field centered-field">
+      <h4>Senses Range</h4>
+      <input type="text" name="sensesRange" [(ngModel)]="characterSheet['sensesRange']" />
+    </div>
+  </section>
+
+  <section class="middle-row">
+    <div class="left-stack">
+      <div class="large-panel short framed">
+        <h4>Expertises</h4>
+        <textarea name="expertises" [(ngModel)]="characterSheet['expertises']"></textarea>
+      </div>
+      <div class="large-panel short framed">
+        <h4>Weapons Talents</h4>
+        <textarea name="weaponsTalents" [(ngModel)]="characterSheet['weaponsTalents']"></textarea>
+      </div>
+      <div class="large-panel tall framed">
+        <h4>Conditions &amp; Injuries</h4>
+        <textarea name="conditionsInjuries" [(ngModel)]="characterSheet['conditionsInjuries']"></textarea>
+      </div>
+    </div>
+    <div class="right-stack">
+      <div class="large-panel tall framed">
+        <h4>Notes</h4>
+        <textarea name="pageOneNotes" [(ngModel)]="characterSheet['pageOneNotes']"></textarea>
+      </div>
+    </div>
+  </section>
+</form>
+
+<form class="sheet page-2">
+  <section class="page-2-main">
+    <div class="goals-panel framed">
+      <h4>Goals</h4>
+      <textarea class="lined-textarea tall" name="goals" [(ngModel)]="characterSheet['goals']"></textarea>
+    </div>
+
+    <div class="right-col">
+      <div class="appearance-panel framed">
+        <h4>Character Appearance</h4>
+        <textarea class="lined-textarea" name="characterAppearance"
+          [(ngModel)]="characterSheet['characterAppearance']"></textarea>
       </div>
 
-      <div class="right-col">
-        <div class="framed appearance-panel"><h4>CHARACTER APPEARANCE</h4></div>
-        <div class="two-col-bottom">
-          <div class="framed note-panel"><h4>NOTES</h4></div>
-          <div class="framed note-panel"><h4>CONNECTIONS</h4></div>
-        </div>
-        <div class="framed equipment-panel"><h4>ARMOR &amp; EQUIPMENT</h4></div>
-        <div class="framed note-panel wide-note"><h4>NOTES</h4></div>
+      <div class="note-panel framed">
+        <h4>Connections</h4>
+        <textarea class="lined-textarea small" name="connections"
+          [(ngModel)]="characterSheet['connections']"></textarea>
       </div>
-    </section>
-  </div>
-<router-outlet />
+
+      <div class="equipment-panel framed">
+        <h4>Armor &amp; Equipment</h4>
+        <textarea class="lined-textarea" name="armorEquipment"
+          [(ngModel)]="characterSheet['armorEquipment']"></textarea>
+      </div>
+
+      <div class="two-col-bottom">
+        <div class="note-panel framed wide-note">
+          <h4>Notes</h4>
+          <textarea class="lined-textarea tall-short" name="notesLeft"
+            [(ngModel)]="characterSheet['notesLeft']"></textarea>
+        </div>
+        <div class="note-panel framed wide-note">
+          <h4>Notes, continued</h4>
+          <textarea class="lined-textarea tall-short" name="notesRight"
+            [(ngModel)]="characterSheet['notesRight']"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+</form>
+<router-outlet></router-outlet>
