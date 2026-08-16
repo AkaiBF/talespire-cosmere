@@ -15,6 +15,27 @@
   <p class="importer-status">{{ importStatusText }}</p>
 </section>
 
+<section class="talespire-tools framed">
+  <div class="tools-grid">
+    <div class="tools-form">
+      <label for="portraitAssetId">Portrait Asset ID</label>
+      <input id="portraitAssetId" type="text" name="portraitAssetId" [(ngModel)]="characterSheet.portraitAssetId"
+        placeholder="Board Asset ID de la mini" [ngModelOptions]="{ standalone: true }" />
+      <div class="tools-actions">
+        <button type="button" (click)="captureSelectedAssetId()">Usar mini seleccionada</button>
+        <button type="button" (click)="setPortraitPreview()">Actualizar portrait</button>
+        <button type="button" (click)="spawnFigure()">Spawn figura</button>
+      </div>
+    </div>
+
+    <div class="portrait-preview">
+      <div #portraitContainer class="portrait-box">
+        <div class="portrait-placeholder">Sin portrait</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <form class="sheet page-1">
   <section class="top-grid">
     <div>

@@ -443,6 +443,62 @@ input[type="number"]::-webkit-inner-spin-button
   font-size: 12px
   text-align: left
 
+.talespire-tools
+  width: var(--page-width)
+  margin-bottom: 12px
+  padding: 14px 12px 12px
+
+.tools-grid
+  display: grid
+  grid-template-columns: 1.8fr 0.8fr
+  gap: 12px
+  align-items: center
+
+.tools-form
+  display: flex
+  flex-direction: column
+  gap: 8px
+
+  > label
+    font-size: 12px
+    font-weight: 700
+
+  > input
+    border: 1px solid #8e8e8e
+    background: rgba(255,255,255,0.55)
+    text-align: left
+    padding: 8px
+    font-size: 12px
+
+.tools-actions
+  display: flex
+  gap: 8px
+  flex-wrap: wrap
+
+  button
+    border: 1px solid #555
+    background: #e8e8e8
+    padding: 6px 10px
+    font-size: 12px
+    cursor: pointer
+
+    &:hover
+      background: #dcdcdc
+
+.portrait-box
+  width: 128px
+  height: 128px
+  border: 1px solid #666
+  background: rgba(255,255,255,0.45)
+  display: flex
+  align-items: center
+  justify-content: center
+  overflow: hidden
+
+.portrait-placeholder
+  font-size: 11px
+  opacity: .75
+
 @media print
   body
     background: white

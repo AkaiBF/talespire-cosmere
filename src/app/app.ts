@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, ElementRef, signal, ViewChild } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
@@ -71,6 +71,7 @@ interface CharacterSheet {
   armorEquipment: string;
   notesLeft: string;
   notesRight: string;
+  portraitAssetId?: string;
 }
 
 type OtherSkillNames = [string, string, string];
@@ -271,6 +272,7 @@ const createCharacterSheet = (overrides: Partial<CharacterSheet> = {}): Characte
   armorEquipment: "Spear, side knife, infused spheres, light armor, field kit",
   notesLeft: "Trust is earned in the field.",
   notesRight: "Stormlight reserved for emergencies.",
+  portraitAssetId: "",
   ...overrides
 });
 
@@ -281,6 +283,9 @@ const createCharacterSheet = (overrides: Partial<CharacterSheet> = {}): Characte
   styleUrl: './app.sass'
 })
 export class App {
+  @ViewChild('portraitContainer', { static: false })
+  portraitContainer?: ElementRef<HTMLDivElement>;
+
   initialized: boolean = false;
   showJsonImporter: boolean = false;
   jsonImportText: string = '';
@@ -337,6 +342,9 @@ export class App {
 
     const importedSheet = parsed as CharacterSheet;
     Object.assign(this.characterSheet, importedSheet);
+    if (this.characterSheet.portraitAssetId) {
+      this.setPortraitPreview();
+    }
 
     this.importStatusText = `Importacion completada: ${this.characterSheet['characterName']}.`;
   }
@@ -390,6 +398,130 @@ export class App {
 
   onSkillLabelClick(field: SkillField, label: string): void {
     this.rollSkill({ field, label });
+  }
+
+  async captureSelectedAssetId(): Promise<void> {
+    try {
+      if (!this.TS || !this.initialized) {
+        this.importStatusText = 'TaleSpire aun no esta inicializado.';
+        return;
+      }
+
+      const selected = await this.TS.creatures.getSelectedCreatures();
+      if (!selected?.length) {
+        this.importStatusText = 'Selecciona una criatura para capturar el Asset ID.';
+        return;
+      }
+
+      const info = await this.TS.creatures.getMoreInfo(selected);
+      const activeMorph = info?.[0]?.morphs?.[info?.[0]?.activeMorphIndex];
+      const assetId = activeMorph?.boardAssetId as string | undefined;
+
+      if (!assetId) {
+        this.importStatusText = 'No se pudo obtener el Asset ID de la mini seleccionada.';
+        return;
+      }
+
+      this.characterSheet.portraitAssetId = assetId;
+      this.importStatusText = 'Asset ID capturado desde la mini seleccionada.';
+      await this.setPortraitPreview();
+    } catch (error: any) {
+      this.importStatusText = 'Error al capturar Asset ID: ' + (error?.message ?? error);
+    }
+  }
+
+  async setPortraitPreview(): Promise<void> {
+    const portraitAssetId = this.characterSheet.portraitAssetId?.trim();
+    if (!portraitAssetId) {
+      this.importStatusText = 'Escribe un Asset ID para el portrait.';
+      return;
+    }
+
+    try {
+      const packs = await this.TS.contentPacks.getContentPacks();
+      const packsInfo = await this.TS.contentPacks.getMoreInfo(packs);
+
+      const boardObjectInfo = await this.TS.contentPacks.findBoardObjectInPacks(
+        portraitAssetId,
+        packsInfo
+      );
+
+      const thumbnailElement = await this.TS.contentPacks.createThumbnailElementForBoardObject(
+        boardObjectInfo.boardObject,
+        128
+      );
+
+      const container = this.portraitContainer?.nativeElement;
+      if (!container) {
+        return;
+      }
+
+      container.innerHTML = '';
+      container.appendChild(thumbnailElement);
+      this.importStatusText = 'Portrait actualizado.';
+    } catch (error: any) {
+      this.importStatusText = 'Error al renderizar portrait: ' + (error?.message ?? error);
+    }
+  }
+
+  async spawnFigure(): Promise<void> {
+    const portraitAssetId = this.characterSheet.portraitAssetId?.trim();
+    if (!portraitAssetId) {
+      this.importStatusText = 'Define un Asset ID para spawnear la figura.';
+      return;
+    }
+
+    try {
+      if (!this.TS || !this.initialized) {
+        this.importStatusText = 'TaleSpire aun no esta inicializado.';
+        return;
+      }
+
+      const board = await this.TS.boards.whereAmI();
+      const creatureInfo = {
+        id: "",
+        isUnique: false,
+        name: this.characterSheet.characterName || 'Stormlight Character',
+        nameSet: true,
+        link: '',
+        position: { locId: 1, x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        boardId: board.id,
+        morphs: [
+          {
+            boardAssetId: portraitAssetId,
+            scale: 1
+          }
+        ],
+        activeMorphIndex: 0,
+        hp: {
+          name: 'hp',
+          value: this.characterSheet.healthCurrent,
+          max: this.characterSheet.healthMax
+        },
+        stats: [
+          { name: 'STR', value: this.characterSheet.strength, max: 24 },
+          { name: 'SPD', value: this.characterSheet.speed, max: 24 },
+          { name: 'INT', value: this.characterSheet.intellect, max: 24 },
+          { name: 'WIL', value: this.characterSheet.willpower, max: 24 },
+          { name: 'AWA', value: this.characterSheet.awareness, max: 24 },
+          { name: 'PRE', value: this.characterSheet.presence, max: 24 },
+          { name: 'Stat 7', value: 0, max: 24 },
+          { name: 'Stat 8', value: 0, max: 24 }
+        ],
+        torchIsOn: false,
+        isExplicitlyHidden: false,
+        isFlying: false,
+        idsOfActivePersistentEmotes: [],
+        ownerIds: []
+      };
+
+      const blueprintUrl = await this.TS.creatures.createBlueprint(creatureInfo);
+      await this.TS.urls.submit(blueprintUrl);
+      this.importStatusText = 'Figura spawneada en TaleSpire.';
+    } catch (error: any) {
+      this.importStatusText = 'Error al spawnear figura: ' + (error?.message ?? error);
+    }
   }
 
   handleSymbioteState(event: any): void {
